@@ -12,5 +12,4 @@ import lombok.RequiredArgsConstructor;
 public class ResponseObjectLoginSignup {
     UsersDTO user;
     String message;
-
 }

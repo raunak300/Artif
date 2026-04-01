@@ -4,8 +4,12 @@ import com.rbm.artif.Exception.UserExistException;
 import com.rbm.artif.dto.UsersDTO;
 import com.rbm.artif.entity.Users;
 import com.rbm.artif.repository.AuthRepo;
+import com.rbm.artif.security.CustomUserDetailsService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +26,15 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    AuthenticationManager manager;
+
+    @Autowired
+    CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    JwtService jwtService;
 
     @Override
     public UsersDTO signupUser(UsersDTO user) throws UserExistException {
@@ -47,6 +60,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void loginUser(UsersDTO user) {
+        Authentication auth= manager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword())
+        );
 
+        if (auth.isAuthenticated()) {
+            return jwtService.generateToken(user.getEmail());
+        }
+
+        throw new RuntimeException("INVALID_CREDENTIALS");
     }
 }
