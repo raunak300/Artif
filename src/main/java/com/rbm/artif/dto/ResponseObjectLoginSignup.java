@@ -1,15 +1,17 @@
 package com.rbm.artif.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
 @RequiredArgsConstructor
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class ResponseObjectLoginSignup {
     UsersDTO user;
     String message;
+
+    public ResponseObjectLoginSignup(UsersDTO userObj, String userCreated) {
+        this.user = userObj;
+        this.message = userCreated;
+    }
 }

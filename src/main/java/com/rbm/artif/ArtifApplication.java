@@ -9,5 +9,4 @@ public class ArtifApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ArtifApplication.class, args);
 	}
-
 }

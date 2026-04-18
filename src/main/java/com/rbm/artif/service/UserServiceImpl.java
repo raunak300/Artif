@@ -5,6 +5,7 @@ import com.rbm.artif.dto.UsersDTO;
 import com.rbm.artif.entity.Users;
 import com.rbm.artif.repository.AuthRepo;
 import com.rbm.artif.security.CustomUserDetailsService;
+import com.rbm.artif.security.JwtService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,13 +60,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void loginUser(UsersDTO user) {
-        Authentication auth= manager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword())
+    public String loginUser(UsersDTO user) {
+        Authentication auth = manager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
         );
 
         if (auth.isAuthenticated()) {
-            return jwtService.generateToken(user.getEmail());
+            return jwtService.generateToken(user.getEmail(),user.getPremium().name());
         }
 
         throw new RuntimeException("INVALID_CREDENTIALS");

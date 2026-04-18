@@ -1,9 +1,11 @@
 package com.rbm.artif.security;
 
+import com.rbm.artif.utilities.Premium;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -13,14 +15,18 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Base64 encoded secret key (generate a strong one)
-    private static final String SECRET_KEY = "YOUR_BASE64_ENCODED_SECRET_KEY_HERE";
+    @Value("${jwt.secret}")
+    private String secretKey;
 
-    public String generateToken(String email) {
+    @Value("${jwt.expiration}")
+    private long jwtExpiration;
+
+    public String generateToken(String email, String role) {
         return Jwts.builder()
-                .subject(email)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hrs
+                .setSubject(email)
+                .claim("role", role)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(getSignInKey())
                 .compact();
     }
@@ -39,17 +45,21 @@ public class JwtService {
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> resolver) {
-        Claims claims = Jwts.parser()
-                .verifyWith(getSignInKey())
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())  //.setSigningKey(secretKey)
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseClaimsJws(token)
+                .getBody();
 
         return resolver.apply(claims);
     }
 
     private SecretKey getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
     }
 }
