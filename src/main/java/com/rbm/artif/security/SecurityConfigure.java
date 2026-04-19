@@ -33,8 +33,7 @@ public class SecurityConfigure {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/premium/**").hasRole("PREMIUM")
-                        .requestMatchers("/pro/**").hasAnyRole("PRO", "PREMIUM")
+                          .requestMatchers("/pro/**").hasAnyRole("PRO", "PREMIUM")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
