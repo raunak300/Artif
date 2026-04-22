@@ -106,5 +106,24 @@ This project uses **Spring Security** with **JWT (JSON Web Token)** for stateles
 - Stateless: Each request must include a valid JWT for protected endpoints.
 - User roles (authorities) are dynamically provided by `CustomUserDetails` and used by Spring Security for endpoint protection.
 
+## Setting UserDetails in SecurityContext
+- In `JwtAuthenticationFilter`, after validating the JWT, the following lines are used:
+  ```java
+  UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+      userDetails, null, userDetails.getAuthorities()
+  );
+  authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+  SecurityContextHolder.getContext().setAuthentication(authToken);
+  ```
+- **What it does:**
+  - Wraps the authenticated user's details and authorities (roles) in an authentication token.
+  - Sets this token in Spring Security's `SecurityContext`, which is thread-local and request-scoped.
+- **Why it is done:**
+  - This makes the authenticated user's identity and roles available throughout the request lifecycle.
+  - Enables Spring Security to perform authorization checks (e.g., `@PreAuthorize`, endpoint access rules) based on the user's roles.
+  - Allows you to access the authenticated user anywhere in your code using `SecurityContextHolder.getContext().getAuthentication()`.
+- **Summary:**
+  - Without this step, Spring Security would not recognize the user as authenticated, and protected endpoints would not be accessible.
+
 ---
 For more details, see the code in the `security`, `controller`, and `service` packages.
