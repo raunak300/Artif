@@ -2,6 +2,7 @@ package com.rbm.artif.Aspect;
 
 import com.rbm.artif.Exception.ArtifException;
 import com.rbm.artif.Exception.ErrorResponse;
+import com.rbm.artif.Exception.InvalidCredentialException;
 import com.rbm.artif.Exception.UserExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,12 @@ public class globalExceptionHandler{
     @ExceptionHandler(ArtifException.class)
     public ResponseEntity<ErrorResponse> wrongUser(){
         ErrorResponse error=new ErrorResponse("INVALID_CREDENTIALS");
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidCredentialException.class)
+    public ResponseEntity<ErrorResponse> globalError(){
+        ErrorResponse error=new ErrorResponse("SERVER_ERROR");
         return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
     }
 }
