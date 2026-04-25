@@ -1,6 +1,7 @@
 package com.rbm.artif.controller;
 
 import com.rbm.artif.Exception.ArtifException;
+import com.rbm.artif.Exception.InvalidCredentialException;
 import com.rbm.artif.Exception.UserExistException;
 import com.rbm.artif.dto.ResponseObjectLoginSignup;
 import com.rbm.artif.dto.UsersDTO;
@@ -30,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginController(@RequestBody UsersDTO user) throws ArtifException {
+    public ResponseEntity<String> loginController(@RequestBody UsersDTO user) throws InvalidCredentialException {
         String jwt = userService.loginUser(user);
         return new ResponseEntity<>(jwt, HttpStatus.OK);
     }

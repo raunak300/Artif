@@ -19,13 +19,13 @@ public class globalExceptionHandler{
 
     @ExceptionHandler(ArtifException.class)
     public ResponseEntity<ErrorResponse> wrongUser(){
-        ErrorResponse error=new ErrorResponse("INVALID_CREDENTIALS");
+        ErrorResponse error=new ErrorResponse("SERVER_ERROR");
         return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidCredentialException.class)
     public ResponseEntity<ErrorResponse> globalError(){
-        ErrorResponse error=new ErrorResponse("SERVER_ERROR");
+        ErrorResponse error=new ErrorResponse("INVALID_CREDENTIALS");
         return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
     }
 }

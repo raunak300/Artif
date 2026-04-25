@@ -1,6 +1,7 @@
 package com.rbm.artif.service;
 
 import com.rbm.artif.Exception.ArtifException;
+import com.rbm.artif.Exception.InvalidCredentialException;
 import com.rbm.artif.Exception.UserExistException;
 import com.rbm.artif.dto.UsersDTO;
 import com.rbm.artif.entity.Users;
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public String loginUser(UsersDTO user) throws ArtifException {
+    public String loginUser(UsersDTO user) throws InvalidCredentialException {
         try {
             Authentication auth = manager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
@@ -69,9 +70,9 @@ public class UserServiceImpl implements UserService{
             if (auth.isAuthenticated()) {
                 return jwtService.generateToken(user.getEmail(), user.getPremium().name());
             }
-            throw new ArtifException("INVALID_CREDENTIALS");
+            throw new InvalidCredentialException("INVALID_CREDENTIALS");
         } catch (org.springframework.security.core.AuthenticationException e) {
-            throw new ArtifException("INVALID_CREDENTIALS");
+            throw new InvalidCredentialException("INVALID_CREDENTIALS");
         }
     }
 }
