@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class HintsDTO {
     String sessionId;
-    Integer Hints;
-    Premium role;
     String Question;
+    String prevSolution;
+    UsersDTO user;
 }

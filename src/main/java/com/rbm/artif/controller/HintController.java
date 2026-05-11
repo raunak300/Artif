@@ -23,7 +23,7 @@ public class HintController {
     @Autowired
     private HintServiceImpl hintService;
 
-    @PutMapping("/")
+    @PostMapping("/")
     public ResponseEntity<ResponseHintDTO> getHint(@RequestBody HintsDTO hintsDTO, HttpServletRequest request) throws ArtifException {
         String hinturl = environment.getProperty("HINT_API");
         String authHeader = request.getHeader("Authorization");

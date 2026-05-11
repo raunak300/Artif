@@ -19,6 +19,7 @@ public class HintServiceImpl {
         ResponseHintDTO obj=null;
 
         try{
+            //System.out.println(hinturl);
             obj = webClientBuilder
                     .build()
                     .post()
