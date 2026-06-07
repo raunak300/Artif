@@ -33,6 +33,7 @@ public class SecurityConfigure {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                           .requestMatchers("/pro/**").hasAnyRole("PRO", "PREMIUM")
                         .anyRequest().authenticated()
                 )
